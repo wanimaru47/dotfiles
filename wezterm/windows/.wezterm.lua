@@ -26,6 +26,14 @@ config.keys = {
 		mods = "SHIFT|META",
 		action = wezterm.action.ToggleFullScreen,
 	},
+	{
+		key = "t",
+		mods = "CTRL|SHIFT",
+		action = act.SpawnCommandInNewTab({
+			domain = { DomainName = "WSL:Ubuntu" },
+			cwd = "/home/wanimaru",
+		}),
+	},
 }
 
 -- フォントの設定
