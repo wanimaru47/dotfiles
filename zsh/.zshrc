@@ -65,6 +65,18 @@ function cdr() {
   cd "$repo"
 }
 
+# Select and edit files
+function fnv() {
+  local files
+
+  files=("${(@f)$(fzf --prompt="File > " --query="$*" \
+    --multi --select-1 --exit-0)}") || return
+
+  [[ -n "$files" ]] || return
+
+  nvim "${files[@]}"
+}
+
 # PATH
 typeset -U path PATH
 path=(
