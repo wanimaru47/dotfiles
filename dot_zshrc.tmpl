@@ -68,6 +68,11 @@ alias emacs='emacs -nw'
 # GNU date (coreutils)
 alias date='gdate'
 {{ end }}
+{{ if .isWSL }}
+# Windows executables
+alias ssh='ssh.exe'
+alias ssh-add='ssh-add.exe'
+{{ end }}
 # Select and move to a ghq repository
 function cdr() {
   local repo
@@ -109,6 +114,9 @@ path=(
   "$HOME/.local/bin"
 {{- if eq .chezmoi.os "darwin" }}
   "$HOME/.volta/bin"
+{{- end }}
+{{- if .isWSL }}
+  /snap/bin
 {{- end }}
   $path
 {{- if eq .chezmoi.os "darwin" }}
