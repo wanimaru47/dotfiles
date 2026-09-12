@@ -1,0 +1,20 @@
+[user]
+	name = Yuta Wanikawa
+	email = wanimaru47@gmail.com
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEyFPkJhwmcE6IqwEZrRJPlJ1XfLWHfZ3vS9LBm6Cj7a
+
+[init]
+	defaultBranch = main
+
+[gpg]
+	format = ssh
+
+[commit]
+	gpgsign = true
+
+[ghq]
+	root = ~/dev
+
+[include]
+	path = ~/.config/git/config.{{ .platform }}
+

@@ -4,7 +4,11 @@
 {{-     $isWSL = true -}}
 {{-   end -}}
 {{- end -}}
+{{- /* platform: darwin / wsl / linux / windows */ -}}
+{{- $platform := .chezmoi.os -}}
+{{- if $isWSL -}}{{- $platform = "wsl" -}}{{- end -}}
 sourceDir = {{ .chezmoi.workingTree | quote }}
 
 [data]
     isWSL = {{ $isWSL }}
+    platform = {{ $platform | quote }}
