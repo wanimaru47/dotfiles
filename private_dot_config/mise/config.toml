@@ -1,0 +1,10 @@
+[tools]
+chezmoi = "latest"
+duckdb = "latest"
+fzf = "latest"
+gh = "latest"
+ghq = "latest"
+jq = "latest"
+neovim = "latest"
+starship = "latest"
+zola = "latest"
