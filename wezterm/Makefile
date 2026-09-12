@@ -1,6 +1,6 @@
 # wezterm の設定を OS ごとに配置する。chezmoi の対象外。
 #   make diff   配置先との差分を表示
-#   make apply  配置先へコピー
+#   make apply  差分を表示してから配置先へコピー
 MAKEFLAGS += --no-print-directory
 UNAME := $(shell uname -s)
 
@@ -19,10 +19,17 @@ endif
 
 .PHONY: diff apply
 
+# 差分があれば unified diff を表示する（- が配置先、+ がリポジトリ側）
 diff:
-	@if $(DIFF) "$(DST)" "$(SRC)"; then echo "up to date: $(DST)"; fi
+	@if [ ! -e "$(DST)" ]; then \
+	  echo "not installed yet: $(DST)"; \
+	  echo "--- (new file) ---"; cat "$(SRC)"; \
+	elif $(DIFF) "$(DST)" "$(SRC)"; then \
+	  echo "up to date: $(DST)"; \
+	fi
 
-apply:
-	mkdir -p "$(dir $(DST))"
-	cp "$(SRC)" "$(DST)"
+# 差分を表示してからコピーする
+apply: diff
+	@mkdir -p "$(dir $(DST))"
+	@cp "$(SRC)" "$(DST)"
 	@echo "installed: $(DST)"
