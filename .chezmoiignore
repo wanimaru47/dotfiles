@@ -3,7 +3,6 @@
        chezmoi が元から無視するため、ここに書く必要はない。 */ -}}
 README.md
 
-zsh
 wezterm
 
 {{/* wezterm は mac / Windows ネイティブで動き、どちらも $HOME/.config/wezterm/wezterm.lua を読む。
