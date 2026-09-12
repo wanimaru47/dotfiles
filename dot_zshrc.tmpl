@@ -112,9 +112,6 @@ set_env_from_keychain "GSM_TOKEN_PASSWORD"
 typeset -U path PATH
 path=(
   "$HOME/.local/bin"
-{{- if eq .chezmoi.os "darwin" }}
-  "$HOME/.volta/bin"
-{{- end }}
 {{- if .isWSL }}
   /snap/bin
 {{- end }}
@@ -125,8 +122,6 @@ path=(
 )
 export PATH
 {{ if eq .chezmoi.os "darwin" }}
-export VOLTA_HOME="$HOME/.volta"
-
 # 1Password SSH agent
 export SSH_AUTH_SOCK="$HOME/.1password/agent.sock"
 
