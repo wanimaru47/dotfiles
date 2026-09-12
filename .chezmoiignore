@@ -2,6 +2,7 @@
        .git / .github / .gitignore など「.」始まりのソース側エントリは
        chezmoi が元から無視するため、ここに書く必要はない。 */ -}}
 README.md
+Makefile
 
 {{/* wezterm は chezmoi ではなく wezterm/Makefile で配置する */}}
 wezterm
