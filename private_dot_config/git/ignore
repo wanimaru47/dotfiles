@@ -1,3 +1,5 @@
+.DS_Store
+*.sw[a-p]
+.idea/
 **/.claude/settings.local.json
-
 **/.claude/.cc-writes/
