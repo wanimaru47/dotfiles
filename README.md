@@ -11,7 +11,7 @@ mac / WSL / Windows の設定を 1 つのリポジトリで管理する。
 
 ```
 .
-├── Makefile               # make diff / apply / update（chezmoi と wezterm をまとめて実行）
+├── Makefile               # make diff / apply（chezmoi と wezterm をまとめて実行）
 ├── .chezmoi.toml.tmpl     # init 時に sourceDir と isWSL を確定
 ├── .chezmoiignore         # chezmoi の配布対象外（README.md, Makefile, wezterm/）
 ├── dot_zshrc.tmpl         # → ~/.zshrc（mac / WSL の差分はテンプレートで分岐）
@@ -33,7 +33,7 @@ make apply     # 差分を表示してから配置（chezmoi apply -v + wezterm 
 git commit && git push
 ```
 
-他の環境では `make update`（`git pull --ff-only` → `make apply`）で取り込む。
+他の環境では `git pull` してから `make diff` → `make apply` で取り込む。
 
 ### chezmoi
 
