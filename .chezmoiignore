@@ -9,5 +9,5 @@ wezterm
 {{/* wezterm は mac / Windows ネイティブで動き、どちらも $HOME/.config/wezterm/wezterm.lua を読む。
      WSL の $HOME には wezterm が存在しないのでここだけ除外する。 */}}
 {{ if .isWSL }}
-.config/wezterm/wezterm.lua
+.config/wezterm
 {{ end }}
