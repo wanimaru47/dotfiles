@@ -1,0 +1,141 @@
+{{- /* WSL 固有の分岐（ssh.exe / /snap/bin など）は #589 で追加する */ -}}
+{{- if eq .chezmoi.os "darwin" -}}
+# Homebrew
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# Homebrew の site-functions を fpath に追加してから compinit する
+fpath=("$(brew --prefix)/share/zsh/site-functions" $fpath)
+
+{{ end -}}
+# Completion
+autoload -Uz compinit
+zmodload zsh/complist
+
+ZSH_COMPDUMP="$HOME/.cache/zsh/zcompdump-$ZSH_VERSION"
+[[ -d "${ZSH_COMPDUMP:h}" ]] || mkdir -p "${ZSH_COMPDUMP:h}"
+compinit -d "$ZSH_COMPDUMP"
+
+setopt auto_menu          # Tab twice starts cycling through candidates
+setopt auto_list          # Show the candidate list on an ambiguous completion
+setopt auto_param_slash   # Append / after a completed directory name
+setopt complete_in_word   # Complete from the cursor, not only at end of word
+setopt always_to_end      # Move the cursor to the end after completing
+setopt list_packed        # Pack the candidate list into fewer lines
+setopt magic_equal_subst  # Complete after --opt=<here>
+unsetopt list_beep
+
+# Colors used by both `ls --color` and the completion candidate list
+if (( $+commands[dircolors] )); then
+  eval "$(dircolors -b)"
+elif (( $+commands[gdircolors] )); then
+  eval "$(gdircolors -b)"
+fi
+
+zstyle ':completion:*' menu select
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+# Case-insensitive, then partial-word (fb -> foo/bar), then substring matching
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*:descriptions' format '%F{yellow}-- %d --%f'
+zstyle ':completion:*:warnings' format '%F{red}-- no matches --%f'
+zstyle ':completion:*' squeeze-slashes true
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path "$HOME/.cache/zsh/zcompcache"
+zstyle ':completion:*:cd:*' ignore-parents parent pwd
+zstyle ':completion:*:*:kill:*:processes' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
+
+# Shift-Tab cycles backwards through the candidates
+bindkey '^[[Z' reverse-menu-complete
+
+# Zsh options
+setopt auto_cd
+setopt interactive_comments
+
+# History
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=10000
+SAVEHIST=10000
+
+setopt hist_ignore_dups
+setopt share_history
+
+# ls
+alias ls='ls --color=auto'
+alias ll='ls -alFh --color=auto'
+alias la='ls -A --color=auto'
+
+alias emacs='emacs -nw'
+{{ if eq .chezmoi.os "darwin" }}
+# GNU date (coreutils)
+alias date='gdate'
+{{ end }}
+# Select and move to a ghq repository
+function cdr() {
+  local repo
+
+  repo=$(ghq list --full-path | fzf --prompt="Repository > ") || return
+
+  cd "$repo"
+}
+
+# Select and edit files
+function fnv() {
+  local files
+
+  files=("${(@f)$(fzf --prompt="File > " --query="$*" \
+    --multi --select-1 --exit-0)}") || return
+
+  [[ -n "$files" ]] || return
+
+  nvim "${files[@]}"
+}
+{{ if eq .chezmoi.os "darwin" }}
+# Thanos Management System
+function set_env_from_keychain() {
+  local keychain_name="${1:-}"
+
+  if [[ -z "$keychain_name" ]]; then
+    echo "keychain name is not found"
+  fi
+
+  export $keychain_name="$(security find-generic-password -a $USER -s $keychain_name -w)"
+}
+
+set_env_from_keychain "AUTH_PORTO_TOKEN_CLIENTSECRET"
+set_env_from_keychain "GSM_TOKEN_PASSWORD"
+{{ end }}
+# PATH
+typeset -U path PATH
+path=(
+  "$HOME/.local/bin"
+{{- if eq .chezmoi.os "darwin" }}
+  "$HOME/.volta/bin"
+{{- end }}
+  $path
+{{- if eq .chezmoi.os "darwin" }}
+  "/Applications/WezTerm.app/Contents/MacOS"
+{{- end }}
+)
+export PATH
+{{ if eq .chezmoi.os "darwin" }}
+export VOLTA_HOME="$HOME/.volta"
+
+# 1Password SSH agent
+export SSH_AUTH_SOCK="$HOME/.1password/agent.sock"
+
+# Kiro terminal integration
+[[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
+{{ end }}
+# Rust
+[[ -f "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
+
+# mise
+eval "$("$HOME/.local/bin/mise" activate zsh)"
+
+# Starship
+eval "$(starship init zsh)"
+{{ if eq .chezmoi.os "darwin" }}
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+{{ end -}}
