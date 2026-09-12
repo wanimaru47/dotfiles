@@ -1,4 +1,3 @@
-{{- /* WSL 固有の分岐（ssh.exe / /snap/bin など）は #589 で追加する */ -}}
 {{- if eq .chezmoi.os "darwin" -}}
 # Homebrew
 eval "$(/opt/homebrew/bin/brew shellenv)"

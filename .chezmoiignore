@@ -1,0 +1,13 @@
+{{- /* パターンは配置先（$HOME 起点）で書く。
+       .git / .github / .gitignore など「.」始まりのソース側エントリは
+       chezmoi が元から無視するため、ここに書く必要はない。 */ -}}
+README.md
+
+zsh
+wezterm
+
+{{/* wezterm は mac / Windows ネイティブで動き、どちらも $HOME/.config/wezterm/wezterm.lua を読む。
+     WSL の $HOME には wezterm が存在しないのでここだけ除外する。 */}}
+{{ if .isWSL }}
+.config/wezterm/wezterm.lua
+{{ end }}

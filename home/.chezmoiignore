@@ -1,4 +1,0 @@
-{{- /* 配置先（$HOME 起点）のパスで書く */ -}}
-{{ if ne .chezmoi.os "darwin" }}
-.config/wezterm/wezterm.lua
-{{ end }}
