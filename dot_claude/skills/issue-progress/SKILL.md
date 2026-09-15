@@ -1,23 +1,30 @@
 ---
 name: issue-progress
-description: Show progress and decisions of a GitHub issue and verify PR alignment. Use when the user wants to check issue status, progress, or decisions. Accepts an optional issue number argument (e.g., `/issue-progress 123`).
+description: |
+  GitHub issueの進捗と意思決定を要約し、PRの実装内容がissueの決定に沿っているかを検証するスキル。issue番号（`123` / `#123`）やissueのURLを受け取れる。指定がない場合は現在のブランチのPRから関連issueを自動検出する。
+  次のようなユーザーの発言で必ずこのスキルを使うこと：「#123の進捗は？」「このissueどこまで進んだ？」「issueの状況を教えて」「#123の開発を始められる状況ですか？」「これまでの経緯と決定事項をまとめて」「issueとPRの整合性を確認して」「PRがissueの方針に沿っているか見て」「issueの決定事項を確認したい」「issue progress」「check issue status」。
+  また、既存のissueに着手する前や、issueに紐づくPRをマージする前に、積極的に「進捗と決定事項を確認しましょうか？」と提案すること。
+  ただし、issueとの整合性ではなくコードの品質そのものを見る依頼（「PRをレビューして」「このコードを見て」）ではこのスキルを使わない。
 allowed-tools: Bash, Read
 ---
 
-現在のブランチに関連するGitHub Issueの進捗と意思決定を要約し、PRの実装内容がIssueの意思決定に沿っているかを検証する。
+指定されたGitHub Issue（指定がなければ現在のブランチに関連するIssue）の進捗と意思決定を要約し、PRの実装内容がIssueの意思決定に沿っているかを検証する。
 
 ## 引数
 
-- `$ARGUMENTS` にIssue番号（例: `123`, `#123`）が渡された場合、そのIssueを直接対象とする（Step 1, 2をスキップ）
-- 引数がない場合は、現在のブランチのPRから関連Issueを自動検出する
+スラッシュコマンド（`/issue-progress 123`）で明示的に起動された場合も、会話の流れから自動的に起動された場合も、引数の扱いは同じ。
+
+- **Issueの指定がある場合** — そのIssueを直接対象とする（Step 2をスキップ）。`123` / `#123` / `https://github.com/<owner>/<repo>/issues/123` のいずれの形式でもよく、「#123の開発を始められる状況ですか？」のように文章の一部として渡された場合も、そこからIssue番号を取り出す
+- **Issueの指定がない場合** — 現在のブランチのPRから関連Issueを自動検出する
+- **Issueが複数指定された場合** — どれを対象にするかユーザーに確認してから進める
 
 ## 手順
 
-### 引数ありの場合
-1. 引数からIssue番号を取得する（`#` プレフィックスは除去）
+### Issueの指定がある場合
+1. 指定からIssue番号を取り出す（`#` プレフィックスやURLは除去）
 2. そのIssueに紐づくPRを特定する → Step 3へ進む
 
-### 引数なしの場合
+### Issueの指定がない場合
 1. 現在のブランチに紐づくPRを取得する
 2. PRの本文やコメントからリンクされたIssueを特定する
 3. Issueの詳細（本文・コメント・タイムライン）を読み取る
@@ -29,9 +36,9 @@ allowed-tools: Bash, Read
 
 ### Step 1: 起点の決定
 
-**引数にIssue番号がある場合:**
+**Issueの指定がある場合:**
 
-`$ARGUMENTS` からIssue番号を取り出し、そのIssueに紐づくPRを探す:
+渡された引数からIssue番号を取り出し、そのIssueに紐づくPRを探す:
 ```
 gh issue view <number> --json title,body,state,comments,labels,assignees,milestone
 ```
@@ -45,7 +52,7 @@ gh api repos/{owner}/{repo}/issues/<number>/timeline --paginate
 
 → Step 3へ進む（Issueは取得済み）
 
-**引数がない場合:**
+**Issueの指定がない場合:**
 
 `gh pr view` で現在のブランチのPRを取得する。PRが見つからない場合はその旨を伝えて終了する。
 
