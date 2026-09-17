@@ -93,21 +93,7 @@ function fnv() {
 
   nvim "${files[@]}"
 }
-{{ if eq .chezmoi.os "darwin" }}
-# Thanos Management System
-function set_env_from_keychain() {
-  local keychain_name="${1:-}"
 
-  if [[ -z "$keychain_name" ]]; then
-    echo "keychain name is not found"
-  fi
-
-  export $keychain_name="$(security find-generic-password -a $USER -s $keychain_name -w)"
-}
-
-set_env_from_keychain "AUTH_PORTO_TOKEN_CLIENTSECRET"
-set_env_from_keychain "GSM_TOKEN_PASSWORD"
-{{ end }}
 # PATH
 typeset -U path PATH
 path=(
@@ -130,6 +116,9 @@ export SSH_AUTH_SOCK="$HOME/.1password/agent.sock"
 {{ end }}
 # Rust
 [[ -f "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
+
+# Machine-local settings (not managed by chezmoi)
+[[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
 
 # mise
 eval "$("$HOME/.local/bin/mise" activate zsh)"
