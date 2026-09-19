@@ -114,9 +114,6 @@ export SSH_AUTH_SOCK="$HOME/.1password/agent.sock"
 # Kiro terminal integration
 [[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
 {{ end }}
-# Rust
-[[ -f "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
-
 # Machine-local settings (not managed by chezmoi)
 [[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
 
