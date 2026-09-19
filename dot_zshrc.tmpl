@@ -1,11 +1,32 @@
-{{- if eq .chezmoi.os "darwin" -}}
+typeset -U path PATH
+{{ if eq .chezmoi.os "darwin" }}
 # Homebrew
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
 # Homebrew の site-functions を fpath に追加してから compinit する
 fpath=("$(brew --prefix)/share/zsh/site-functions" $fpath)
 
-{{ end -}}
+path+=("/Applications/WezTerm.app/Contents/MacOS")
+
+# GNU date (coreutils)
+alias date='gdate'
+
+# 1Password SSH agent
+export SSH_AUTH_SOCK="$HOME/.1password/agent.sock"
+
+# Kiro terminal integration
+[[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
+{{ end }}
+{{- if .isWSL }}
+path=(/snap/bin $path)
+
+# Windows executables
+alias ssh='ssh.exe'
+alias ssh-add='ssh-add.exe'
+{{ end }}
+path=("$HOME/.local/bin" $path)
+export PATH
+
 # Completion
 autoload -Uz compinit
 zmodload zsh/complist
@@ -64,15 +85,7 @@ alias ll='ls -alFh --color=auto'
 alias la='ls -A --color=auto'
 
 alias emacs='emacs -nw'
-{{ if eq .chezmoi.os "darwin" }}
-# GNU date (coreutils)
-alias date='gdate'
-{{ end }}
-{{ if .isWSL }}
-# Windows executables
-alias ssh='ssh.exe'
-alias ssh-add='ssh-add.exe'
-{{ end }}
+
 # Select and move to a ghq repository
 function cdr() {
   local repo
@@ -94,26 +107,6 @@ function fnv() {
   nvim "${files[@]}"
 }
 
-# PATH
-typeset -U path PATH
-path=(
-  "$HOME/.local/bin"
-{{- if .isWSL }}
-  /snap/bin
-{{- end }}
-  $path
-{{- if eq .chezmoi.os "darwin" }}
-  "/Applications/WezTerm.app/Contents/MacOS"
-{{- end }}
-)
-export PATH
-{{ if eq .chezmoi.os "darwin" }}
-# 1Password SSH agent
-export SSH_AUTH_SOCK="$HOME/.1password/agent.sock"
-
-# Kiro terminal integration
-[[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
-{{ end }}
 # Machine-local settings (not managed by chezmoi)
 [[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
 
