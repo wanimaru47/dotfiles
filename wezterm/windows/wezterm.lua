@@ -93,7 +93,17 @@ wezterm.on("update-status", function(window, _)
 	window:set_right_status(wezterm.format(right))
 end)
 
+config.leader = { key = "q", mods = "CTRL", timeout_milliseconds = 1000 }
+
 config.keys = {
+	{ key = "|", mods = "LEADER|SHIFT", action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
+	{ key = "-", mods = "LEADER", action = act.SplitVertical({ domain = "CurrentPaneDomain" }) },
+	{ key = "h", mods = "LEADER", action = act.ActivatePaneDirection("Left") },
+	{ key = "j", mods = "LEADER", action = act.ActivatePaneDirection("Down") },
+	{ key = "k", mods = "LEADER", action = act.ActivatePaneDirection("Up") },
+	{ key = "l", mods = "LEADER", action = act.ActivatePaneDirection("Right") },
+	{ key = "z", mods = "LEADER", action = act.TogglePaneZoomState },
+	{ key = "x", mods = "LEADER", action = act.CloseCurrentPane({ confirm = true }) },
 	{ key = "f", mods = "SHIFT|META", action = act.ToggleFullScreen },
 	{
 		key = "t",
