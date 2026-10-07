@@ -1,0 +1,18 @@
+[user]
+name = "Yuta Wanikawa"
+email = "wanimaru47@gmail.com"
+
+[signing]
+behavior = "drop"
+backend = "ssh"
+key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEyFPkJhwmcE6IqwEZrRJPlJ1XfLWHfZ3vS9LBm6Cj7a"
+
+[signing.backends.ssh]
+{{- if eq .platform "wsl" }}
+program = "op-ssh-sign-wsl.exe"
+{{- else if eq .platform "darwin" }}
+program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+{{- end }}
+
+[git]
+sign-on-push = true
