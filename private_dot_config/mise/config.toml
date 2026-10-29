@@ -19,3 +19,6 @@ rust = "latest"
 starship = "latest"
 uv = "latest"
 zola = "latest"
+
+[settings]
+self_update.auto = true
