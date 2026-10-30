@@ -2,6 +2,7 @@ typeset -U path PATH
 {{ if eq .chezmoi.os "darwin" }}
 # Homebrew
 eval "$(/opt/homebrew/bin/brew shellenv)"
+path=("$HOMEBREW_PREFIX/opt/curl/bin" $path)
 
 # Homebrew の site-functions を fpath に追加してから compinit する
 fpath=("$(brew --prefix)/share/zsh/site-functions" $fpath)
