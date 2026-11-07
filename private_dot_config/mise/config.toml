@@ -1,0 +1,25 @@
+[tools]
+aws-cli = "latest"
+aws-vault = "latest"
+chezmoi = "latest"
+codex = "latest"
+duckdb = "latest"
+fzf = "latest"
+gh = "latest"
+ghq = "latest"
+go = "latest"
+herdr = "latest"
+java = "corretto-21"
+jj = "latest"
+jq = "latest"
+neovim = "latest"
+node = "latest"
+protoc = "latest"
+ripgrep = "latest"
+rust = "latest"
+starship = "latest"
+uv = "latest"
+zola = "latest"
+
+[settings]
+self_update.auto = true

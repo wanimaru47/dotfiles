@@ -1,0 +1,14 @@
+[user]
+name = "Yuta Wanikawa"
+email = "wanimaru47@gmail.com"
+
+[signing]
+behavior = "drop"
+backend = "ssh"
+key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEyFPkJhwmcE6IqwEZrRJPlJ1XfLWHfZ3vS9LBm6Cj7a"
+
+[signing.backends.ssh]
+program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+
+[git]
+sign-on-push = true
